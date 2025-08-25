@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explorando el Mundo Digital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: A single-page application with a fixed sidebar for navigation and a main content area for definitions. The structure is thematic, grouping related terms (Web, Marketing, Gaming, Tech) to improve learning and context, rather than a simple alphabetical list. This design choice facilitates easier exploration and understanding of related concepts. Users can click on a term in the sidebar to smoothly scroll to its definition, and a scrollspy feature highlights the current term in the navigation as they scroll, providing constant context and improving usability. New sections for Gemini-powered content have been added within existing cards and categories. -->
+    <!-- Visualization & Content Choices: Report Info: List of 14 definitions. -> Goal: Inform & Organize. -> Viz/Presentation Method: Thematic sections with styled cards for each definition, using Unicode icons for visual cues. New buttons trigger API calls for dynamic content. -> Interaction: Click-to-scroll navigation and a scrollspy to highlight the active section. Buttons now initiate API calls to generate summaries and expanded definitions, displaying the results in new UI elements. -> Justification: The card layout visually separates each concept, making the content easy to digest. The interactive navigation is intuitive for a glossary-style page and superior to static text. The new AI-powered features provide dynamic, on-demand content that enhances the learning experience. -> Library/Method: Vanilla JS for interactivity and API calls, Tailwind CSS for styling. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+        .nav-link.active {
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div class="container mx-auto max-w-7xl">
+        <div class="flex flex-col md:flex-row">
+            
+            <aside class="w-full md:w-1/4 md:sticky md:top-0 md:h-screen p-4 md:p-8 border-r border-slate-200 bg-white md:bg-transparent">
+                <h1 class="text-2xl font-bold text-sky-900 mb-2">Mundo Digital</h1>
+                <p class="text-sm text-slate-500 mb-6">Una guía interactiva de conceptos clave. Ahora con el poder de la IA.</p>
+                <nav id="navigation" class="space-y-2"></nav>
+            </aside>
+
+            <main class="w-full md:w-3/4 p-4 md:p-12">
+                <header class="mb-12">
+                    <h2 class="text-4xl font-bold text-slate-900">Explorando el Mundo Digital</h2>
+                    <p class="mt-4 text-lg text-slate-600">
+                        Bienvenido a esta guía interactiva. Aquí encontrarás definiciones claras sobre conceptos fundamentales del mundo de la tecnología, el marketing digital y los videojuegos. Utiliza el menú de la izquierda para navegar rápidamente entre los términos o simplemente desplázate para explorar todo el contenido. Cada sección está diseñada para ofrecerte una comprensión rápida y precisa de cada tema.
+                    </p>
+                    <p class="mt-2 text-sm text-slate-500">
+                        ✨ ¡Novedad! Haz clic en los botones para expandir las definiciones o resumir categorías usando la IA de Gemini.
+                    </p>
+                </header>
+                <div id="content" class="space-y-16"></div>
+            </main>
+
+        </div>
+    </div>
+
+    <script>
+        const termsData = [
+            { 
+                category: 'Web y Redes',
+                items: [
+                    { id: 'buscador-web', title: 'Buscador Web', icon: '🌐', content: 'Un buscador web es una herramienta en línea que permite a los usuarios encontrar información en la World Wide Web. Funciona indexando vastas cantidades de datos de sitios web y mostrándolos en una lista de resultados, o SERP (Search Engine Results Page), cuando un usuario realiza una consulta. Ejemplos populares incluyen Google, Bing y Yahoo.' },
+                    { id: 'enlace-web', title: 'Enlace Web', icon: '🔗', content: 'Un enlace web (o hipervínculo) es un elemento que permite al usuario navegar de una página a otra en internet. Cuando se hace clic en él, el navegador carga la dirección URL asociada.' },
+                    { id: 'dominio-pagina-web', title: 'Dominio de Página Web', icon: '🏠', content: 'Un dominio de página web es la dirección única y fácil de recordar de un sitio web en internet. Por ejemplo, en `www.google.com`, "google.com" es el nombre de dominio. Es el equivalente a una dirección física para una casa en la red.' },
+                    { id: 'deep-web', title: 'Deep Web', icon: '🌊', content: 'La Deep Web (o web profunda) se refiere a las partes de la World Wide Web cuyo contenido no está indexado por los motores de búsqueda tradicionales. Incluye bases de datos privadas, contenido protegido por contraseñas y otras páginas no enlazadas. Es mucho más grande que la web superficial que usamos a diario.' },
+                ]
+            },
+            {
+                category: 'Marketing y Negocios',
+                items: [
+                    { id: 'nicho', title: 'Nicho', icon: '🎯', content: 'En el contexto del marketing, un nicho es un segmento específico y especializado de un mercado más grande. Se define por las necesidades o identidades de un grupo de consumidores. Concentrarse en un nicho permite a las empresas atender a una audiencia más específica y con menos competencia.' },
+                    { id: 'landing-page', title: 'Landing Page', icon: '📄', content: 'Una Landing Page (o página de aterrizaje) es una página web independiente creada específicamente para una campaña de marketing o publicidad. El objetivo principal es convertir a los visitantes en clientes potenciales o ventas, con un único llamado a la acción (CTA) claro.' },
+                    { id: 'marketing', title: 'Marketing', icon: '📈', content: 'El marketing es el proceso de explorar, crear y entregar valor para satisfacer las necesidades de un mercado objetivo en términos de bienes y servicios. Se trata de la promoción de productos o servicios, incluyendo la investigación, la comunicación y la distribución.' },
+                ]
+            },
+            {
+                category: 'Videojuegos y Tecnología',
+                items: [
+                    { id: 'resident-evil-village', title: 'Resident Evil Village', icon: '🎮', content: 'Resident Evil Village es un videojuego de terror y supervivencia desarrollado y publicado por Capcom. Es la octava entrega principal de la serie Resident Evil. El juego es conocido por su atmósfera gótica, personajes memorables y una mezcla de acción y exploración.' },
+                    { id: 'juego-grounded', title: 'Juego Grounded', icon: '🐜', content: 'Grounded es un videojuego de supervivencia desarrollado por Obsidian Entertainment. Los jugadores son encogidos al tamaño de una hormiga y deben sobrevivir en un patio trasero lleno de peligros, construyendo bases, recolectando recursos y luchando contra insectos hostiles.' },
+                    { id: 'banear', title: 'Banear', icon: '🚫', content: 'Banear es la acción de prohibir o restringir el acceso de un usuario a un servicio, plataforma, juego o comunidad en línea. Esta medida se toma generalmente como castigo por violar las reglas o los términos de servicio.' },
+                ]
+            },
+            {
+                category: 'Conceptos Técnicos',
+                items: [
+                    { id: 'inteligencia-artificial', title: 'Inteligencia Artificial (IA)', icon: '🤖', content: 'La Inteligencia Artificial es la simulación de la inteligencia humana en máquinas. Se refiere a la capacidad de los sistemas informáticos para realizar tareas que normalmente requieren inteligencia humana, como el aprendizaje, la percepción visual, la toma de decisiones y el reconocimiento del habla.' },
+                    { id: 'bugs', title: 'Bugs', icon: '🐞', content: 'En el mundo de la tecnología, un bug es un error, fallo o defecto en el código de un programa o sistema que causa un comportamiento inesperado. Los bugs pueden variar desde inconvenientes menores hasta fallos críticos que impiden el funcionamiento de una aplicación.' },
+                    { id: 'etica', title: 'Ética', icon: '⚖️', content: 'La ética en un contexto digital se refiere a los principios morales que guían el uso de la tecnología, la creación de software y la interacción en línea. Aborda preguntas sobre la privacidad, el sesgo algorítmico, la seguridad de los datos y el impacto social de las innovaciones tecnológicas.' },
+                    { id: 'texto-natural', title: 'Texto Natural', icon: '✍️', content: 'El texto natural se refiere al lenguaje humano tal como se habla o escribe. En el campo de la IA, el procesamiento del lenguaje natural (NLP) es la rama que permite a las computadoras comprender, interpretar y generar texto natural.' },
+                ]
+            }
+        ];
+
+        const navigationEl = document.getElementById('navigation');
+        const contentEl = document.getElementById('content');
+
+        const apiKey = "";
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+        async function callGeminiApi(prompt) {
+            try {
+                const chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                const payload = { contents: chatHistory };
+                
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.candidates && result.candidates.length > 0 && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts.length > 0) {
+                    return result.candidates[0].content.parts[0].text;
+                } else {
+                    return "No se pudo generar el contenido. Inténtalo de nuevo más tarde.";
+                }
+            } catch (error) {
+                console.error("Error calling Gemini API:", error);
+                return "Ocurrió un error al conectar con el servicio. Por favor, revisa la consola para más detalles.";
+            }
+        }
+
+        async function expandDefinition(button, termTitle, termContent) {
+            const container = button.closest('.definition-container');
+            let expandedContentEl = container.querySelector('.expanded-content');
+            
+            if (!expandedContentEl) {
+                expandedContentEl = document.createElement('div');
+                expandedContentEl.className = 'expanded-content mt-4 bg-slate-100 p-4 rounded-lg text-sm text-slate-600 transition-all duration-300 ease-in-out transform scale-y-0 origin-top h-0 overflow-hidden';
+                container.appendChild(expandedContentEl);
+            }
+            
+            if (expandedContentEl.classList.contains('active')) {
+                expandedContentEl.classList.remove('active', 'scale-y-100', 'h-auto', 'p-4');
+                expandedContentEl.classList.add('scale-y-0', 'h-0', 'p-0');
+                button.textContent = '✨ Expandir Definición ✨';
+                return;
+            }
+
+            button.textContent = 'Generando...';
+            button.disabled = true;
+
+            const prompt = `Actúa como un experto en tecnología y expande la siguiente definición de "${termTitle}": "${termContent}". Proporciona detalles adicionales, ejemplos o un contexto más amplio.`;
+            const expandedText = await callGeminiApi(prompt);
+            
+            expandedContentEl.innerHTML = expandedText;
+            expandedContentEl.classList.add('active', 'scale-y-100', 'h-auto', 'p-4');
+            expandedContentEl.classList.remove('scale-y-0', 'h-0', 'p-0');
+            button.textContent = '✨ Colapsar Definición ✨';
+            button.disabled = false;
+        }
+
+        async function generateCategorySummary(button, category, terms) {
+            const container = button.closest('.category-container');
+            let summaryEl = container.querySelector('.category-summary');
+            
+            if (!summaryEl) {
+                summaryEl = document.createElement('div');
+                summaryEl.className = 'category-summary mt-6 bg-slate-100 p-6 rounded-xl text-slate-700 transition-all duration-300 ease-in-out transform scale-y-0 origin-top h-0 overflow-hidden';
+                container.appendChild(summaryEl);
+            }
+
+            if (summaryEl.classList.contains('active')) {
+                summaryEl.classList.remove('active', 'scale-y-100', 'h-auto', 'p-6');
+                summaryEl.classList.add('scale-y-0', 'h-0', 'p-0');
+                button.textContent = '✨ Generar Resumen ✨';
+                return;
+            }
+
+            button.textContent = 'Generando...';
+            button.disabled = true;
+
+            const contentText = terms.map(t => `${t.title}: ${t.content}`).join('\n\n');
+            const prompt = `Resume los siguientes conceptos de la categoría "${category}" en un solo párrafo, destacando la relación entre ellos:\n\n${contentText}`;
+            const summaryText = await callGeminiApi(prompt);
+            
+            summaryEl.innerHTML = `<p>${summaryText}</p>`;
+            summaryEl.classList.add('active', 'scale-y-100', 'h-auto', 'p-6');
+            summaryEl.classList.remove('scale-y-0', 'h-0', 'p-0');
+            button.textContent = '✨ Colapsar Resumen ✨';
+            button.disabled = false;
+        }
+
+        termsData.forEach(category => {
+            const categorySection = document.createElement('section');
+            categorySection.id = category.category.replace(/\s+/g, '-').toLowerCase();
+            categorySection.className = 'pt-10 -mt-10 category-container';
+
+            const summaryHeader = document.createElement('div');
+            summaryHeader.className = 'flex justify-between items-center mb-6';
+            summaryHeader.innerHTML = `
+                <h3 class="text-xl font-bold text-slate-600 uppercase tracking-wider">${category.category}</h3>
+                <button class="bg-sky-500 text-white font-semibold py-2 px-4 rounded-full hover:bg-sky-600 transition-colors duration-200 text-sm whitespace-nowrap" onclick="generateCategorySummary(this, '${category.category}', ${JSON.stringify(category.items).replace(/"/g, '&quot;')})">✨ Generar Resumen ✨</button>
+            `;
+            categorySection.appendChild(summaryHeader);
+
+            const termsContainer = document.createElement('div');
+            termsContainer.className = 'space-y-8';
+
+            category.items.forEach(item => {
+                const contentCard = document.createElement('div');
+                contentCard.id = item.id;
+                contentCard.className = 'bg-white p-8 rounded-xl border border-slate-200 shadow-sm definition-container';
+                contentCard.innerHTML = `
+                    <h3 class="text-2xl font-bold text-sky-900 flex items-center gap-3"><span class="text-3xl">${item.icon}</span>${item.title}</h3>
+                    <p class="mt-4 text-slate-700 leading-relaxed">${item.content}</p>
+                    <div class="mt-6">
+                        <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-full hover:bg-blue-600 transition-colors duration-200 text-sm" onclick="expandDefinition(this, '${item.title}', '${item.content}')">✨ Expandir Definición ✨</button>
+                    </div>
+                `;
+                termsContainer.appendChild(contentCard);
+            });
+
+            categorySection.appendChild(termsContainer);
+            contentEl.appendChild(categorySection);
+
+            const navList = document.createElement('ul');
+            navList.className = 'space-y-1';
+            category.items.forEach(item => {
+                const navItem = document.createElement('li');
+                navItem.innerHTML = `<a href="#${item.id}" class="nav-link flex items-center gap-3 px-3 py-2 text-slate-600 rounded-md hover:bg-slate-100 transition-colors duration-200"><span>${item.icon}</span><span>${item.title}</span></a>`;
+                navList.appendChild(navItem);
+            });
+
+            const categoryTitleLink = document.createElement('h3');
+            categoryTitleLink.className = 'text-sm font-semibold text-slate-500 uppercase tracking-wider mt-6 first:mt-0';
+            categoryTitleLink.textContent = category.category;
+            navigationEl.appendChild(categoryTitleLink);
+            navigationEl.appendChild(navList);
+        });
+
+        const sections = document.querySelectorAll('main section');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.5
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${id.split('-').slice(0, -1).join('-')}`) {
+                             link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            section.querySelectorAll('.definition-container').forEach(term => observer.observe(term));
+        });
+        
+        navigationEl.addEventListener('click', (e) => {
+            if (e.target.closest('a')) {
+                e.preventDefault();
+                const link = e.target.closest('a');
+                const targetId = link.getAttribute('href');
+                document.querySelector(targetId).scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    </script>
+</body>
+</html>
